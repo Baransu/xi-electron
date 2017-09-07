@@ -3,7 +3,7 @@ import cp from 'child_process';
 import path from 'path';
 import { ipcRenderer } from 'electron';
 
-import { CORE_PATH, APP_DIR } from '../../common/environment';
+import { CORE_PATH, APP_DIR, XI_PLUGIN_DIR } from '../../common/environment';
 import { el, link } from './utils';
 import View from '../editor/view';
 import Tabs from './tabs';
@@ -42,7 +42,11 @@ export default class Workspace {
     this.el = place.appendChild(el('div', null, 'xi-workspace'));
 
     // Initialise xi-core.
-    const env = Object.assign({ RUST_BACKTRACE: 1 }, process.env);
+    const env = {
+      ...process.env,
+      RUST_BACKTRACE: 1,
+      XI_PLUGIN_DIR
+    };
     this.core = cp.spawn(CORE_PATH, [], { env });
     this.core.stdout.on('data', this.receiveFromCore);
     this.core.stderr.on('data', data => {
