@@ -1,10 +1,9 @@
-
 import Line from './line';
 
 export default class LineCache {
   constructor(lineView) {
     this.nInvalidBefore = 0;
-    this.nInvalidAfter = 0
+    this.nInvalidAfter = 0;
     this.lines = [];
     this.lineView = lineView;
   }
@@ -14,8 +13,10 @@ export default class LineCache {
   }
 
   get isEmpty() {
-    return this.lines.length == 0 ||
-          (this.lines.length == 1 && this.lines[0].text  == "");
+    return (
+      this.lines.length == 0 ||
+      (this.lines.length == 1 && this.lines[0].text == '')
+    );
   }
 
   getLine(i) {
@@ -28,9 +29,9 @@ export default class LineCache {
   applyUpdate(data) {
     if (!data.ops) return;
     let newInvalidBefore = 0,
-        newInvalidAfter = 0,
-        newLines = [],
-        oi = 0;
+      newInvalidAfter = 0,
+      newLines = [],
+      oi = 0;
 
     for (let i = 0; i < data.ops.length; ++i) {
       const op = data.ops[i];
@@ -42,7 +43,7 @@ export default class LineCache {
           if (newLines.length == 0) {
             newInvalidBefore += n;
           } else {
-            newInvalidAfter +=n;
+            newInvalidAfter += n;
           }
           break;
         case 'ins':
@@ -70,7 +71,10 @@ export default class LineCache {
             nRemaining -= nInvalid;
           }
           if (nRemaining > 0 && oi < this.nInvalidBefore + this.lines.length) {
-            let nCopy = Math.min(nRemaining, this.nInvalidBefore + this.lines.length - oi);
+            let nCopy = Math.min(
+              nRemaining,
+              this.nInvalidBefore + this.lines.length - oi
+            );
             let start = oi - this.nInvalidBefore;
             if (op_type == 'copy') {
               newLines.push(...this.lines.slice(start, start + nCopy));
@@ -102,7 +106,7 @@ export default class LineCache {
     }
     this.nInvalidBefore = newInvalidBefore;
     this.nInvalidAfter = newInvalidAfter;
-    this.lines.forEach((line) => line.el.remove());
+    this.lines.forEach(line => line.el.remove());
     this.lines = newLines;
   }
 
@@ -115,9 +119,11 @@ export default class LineCache {
     }
 
     for (let i = first; i < last; ++i) {
-      if (i < this.nInvalidBefore ||
-          i >= (this.nInvalidBefore + this.lines.count) ||
-          this.lines[i - this.nInvalidBefore] == null) {
+      if (
+        i < this.nInvalidBefore ||
+        i >= this.nInvalidBefore + this.lines.count ||
+        this.lines[i - this.nInvalidBefore] == null
+      ) {
         if (result.length == 0 || result[result.length - 1][1] != i) {
           result.push([i, i + 1]);
         } else {
@@ -128,4 +134,3 @@ export default class LineCache {
     return result;
   }
 }
-

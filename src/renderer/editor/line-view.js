@@ -11,7 +11,9 @@ export default class LineView {
 
     this.measure = el('div', null, 'xi-measure');
     this.lineContainer = el('div', null, 'xi-line-container');
-    this.el = view.el.appendChild(el('div', [this.lineContainer, this.measure], 'xi-line-view'));
+    this.el = view.el.appendChild(
+      el('div', [this.lineContainer, this.measure], 'xi-line-view')
+    );
 
     this.updateViewport();
     on(window, 'resize', () => this.updateViewport(), false);
@@ -24,7 +26,9 @@ export default class LineView {
   // Determine how many lines should render, and send this info to xi-core.
   // TODO: don't always request from 0, get "view.firstLine" or something.
   updateViewport() {
-    const nVisibleLines = Math.ceil(this.el.offsetHeight / this.textHeight(true));
+    const nVisibleLines = Math.ceil(
+      this.el.offsetHeight / this.textHeight(true)
+    );
     this.view.edit('scroll', [0, nVisibleLines]);
   }
 
@@ -58,7 +62,7 @@ export default class LineView {
     removeChildrenAndAdd(this.measure, pre);
 
     const rect = anchor.getBoundingClientRect(),
-          width = (rect.right - rect.left) / 10;
+      width = (rect.right - rect.left) / 10;
 
     if (width > 2) this.cachedCharWidth = width;
     return width || 10;
@@ -72,7 +76,7 @@ export default class LineView {
 
   // FIXME: naive method. Very inefficient.
   render() {
-    this.lines().forEach((line) => line.render());
+    this.lines().forEach(line => line.render());
   }
 
   // Compute the character position closest to the given coordinates.
@@ -112,7 +116,7 @@ export default class LineView {
 
   lineAtHeight(y) {
     const textHeight = this.textHeight();
-    return Math.round((y - (textHeight / 2)) / textHeight);
+    return Math.round((y - textHeight / 2) / textHeight);
   }
 
   /**

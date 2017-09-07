@@ -11,8 +11,16 @@ import Tabs from './tabs';
 // Each window has a workspace.
 export default class Workspace {
   constructor(place, settings) {
-    assert.strictEqual(typeof place.nodeType, 'number', 'First parameter must be an element');
-    assert.strictEqual(typeof settings, 'object', 'Second parameter must be a settings instance');
+    assert.strictEqual(
+      typeof place.nodeType,
+      'number',
+      'First parameter must be an element'
+    );
+    assert.strictEqual(
+      typeof settings,
+      'object',
+      'Second parameter must be a settings instance'
+    );
 
     // Setup our theming.
     this.theme = { uiEl: link(), syntaxEl: link() };
@@ -33,6 +41,15 @@ export default class Workspace {
     // Create the main element.
     this.el = place.appendChild(el('div', null, 'xi-workspace'));
 
+    // Initialise xi-core.
+    const env = Object.assign({ RUST_BACKTRACE: 1 }, process.env);
+    this.core = cp.spawn(CORE_PATH, [], { env });
+    this.core.stdout.on('data', this.receiveFromCore);
+    this.core.stderr.on('data', data => {
+      console.error(data.toString());
+      // TODO: attempt to reboot core process?
+    });
+
     // Initialise tabs.
     this.tabs = new Tabs(this);
     this.tabs.on('new', () => this.newView());
@@ -40,15 +57,6 @@ export default class Workspace {
     this.tabs.on('remove', (e, { id }) => {
       // TODO: prevent if isDirty from core.
       if (!this.closeView(id)) e.preventDefault();
-    });
-
-    // Initialise xi-core.
-    const env = Object.assign({ RUST_BACKTRACE: 1 }, process.env);
-    this.core = cp.spawn(CORE_PATH, [], { env });
-    this.core.stdout.on('data', this.receiveFromCore.bind(this));
-    this.core.stderr.on('data', (data) => {
-      console.error(data.toString());
-      // TODO: attempt to reboot core process?
     });
   }
 
@@ -62,7 +70,7 @@ export default class Workspace {
     this.sendToCore({
       params,
       id: instanceId,
-      method: "new_view",
+      method: 'new_view'
     });
   }
 
@@ -101,13 +109,13 @@ export default class Workspace {
         view_id: view.id,
         file_path: view.path
       }
-    })
+    });
   }
 
   // return true when closing, false otherwise.
   // TODO: query core to see if view is dirty.
   closeView(id) {
-    if (this.views[id] /* && !this.isDirty(id) */ ) {
+    if (this.views[id] /* && !this.isDirty(id) */) {
       this.views[id].destroy();
       delete this.views[id];
       return true;
@@ -122,8 +130,8 @@ export default class Workspace {
    */
 
   openFile(filepaths) {
-    filepaths.forEach((filepath) => {
-      this.newView({ 'file_path': filepath });
+    filepaths.forEach(filepath => {
+      this.newView({ file_path: filepath });
     });
   }
 
@@ -153,7 +161,10 @@ export default class Workspace {
     // Update theme, remember, paths should be relative to our Packages
     // directory.
     this.updateTheme(this.theme.uiEl, path.join(APP_DIR, s.get('theme.ui')));
-    this.updateTheme(this.theme.syntaxEl, path.join(APP_DIR, s.get('theme.syntax')));
+    this.updateTheme(
+      this.theme.syntaxEl,
+      path.join(APP_DIR, s.get('theme.syntax'))
+    );
   }
 
   serialise() {
@@ -198,47 +209,41 @@ export default class Workspace {
 
   sendToCore(data) {
     try {
-      this.core.stdin.write(`${JSON.stringify(data)}\n`);
+      const serialized = JSON.stringify(data);
+      console.log(serialized);
+      this.core.stdin.write(`${serialized}\n`);
       return true;
-    }
-    catch (e) {
-      console.error(e);
+    } catch (e) {
+      console.error('this is error', e);
       return false;
     }
   }
 
-  receiveFromCore(data) {
+  receiveFromCore = data => {
     const msgs = this.parseMessage(data);
-    msgs.forEach((msg) => {
+    msgs.forEach(msg => {
       if (msg.result) {
         this.createView(msg.id, msg.result);
-      }
-      else if (msg.method == 'update') {
+      } else if (msg.method == 'update') {
         const view = this.views[msg.params.view_id];
         if (view) view.update(msg.params.update);
-      }
-      else if (msg.method == 'scroll_to') {
+      } else if (msg.method == 'scroll_to') {
         const view = this.views[msg.params.view_id];
         if (view) {
           const { col, line } = msg.params;
           view.scrollTo(col, line);
         }
-      }
-      else {
+      } else {
         console.warn('Unhandled message from xi-core');
         console.log(msg);
       }
     });
-  }
+  };
 
   parseMessage(data) {
     try {
-      return data.toString()
-        .split('\n')
-        .map(parse)
-        .filter(exists => !!exists);
-    }
-    catch (e) {
+      return data.toString().split('\n').map(parse).filter(exists => !!exists);
+    } catch (e) {
       console.error(e);
       return null;
     }
@@ -252,10 +257,8 @@ function parse(json) {
 
   try {
     return JSON.parse(json);
-  }
-  catch (e) {
+  } catch (e) {
     console.error(e);
     return null;
   }
 }
-

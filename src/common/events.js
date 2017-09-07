@@ -6,7 +6,7 @@ export default class EventEmitter extends NodeEventEmitter {
     super();
 
     // Ensure errors thrown in handlers don't crash Node.
-    this.on('error', (err) => {
+    this.on('error', err => {
       console.error('An error occurred in an emitter');
       console.error(err);
     });
@@ -17,10 +17,12 @@ export default class EventEmitter extends NodeEventEmitter {
     if (!event) event = {};
     if (!event.hasOwnProperty('_prevented')) event._prevented = false;
     if (!event.hasOwnProperty('preventDefault')) {
-      event.preventDefault = () => event._prevented = true;
+      event.preventDefault = () => (event._prevented = true);
     }
     if (!event.hasOwnProperty('defaultPrevented')) {
-      Object.defineProperty(event, 'defaultPrevented', { get: () => event._prevented });
+      Object.defineProperty(event, 'defaultPrevented', {
+        get: () => event._prevented
+      });
     }
 
     this.emit(name, event, ...args);

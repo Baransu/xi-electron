@@ -6,12 +6,11 @@ import { encrypt } from '../../common/encryption';
 
 export function init() {
   // Run this config after app initialisation.
-  process.nextTick(function () {
-
+  process.nextTick(function() {
     // Ensure the main config file exists.
     // NOTE: This file shouldn't ever be changed by the user.
     fs.readFile(ENV.ASSET_MAIN_CONFIG, 'utf8', (err, data) => {
-      fs.outputFile(ENV.MAIN_CONFIG_PATH, encrypt(data), opts, (err) => {
+      fs.outputFile(ENV.MAIN_CONFIG_PATH, encrypt(data), opts, err => {
         if (err && err.code != 'EEXIST') throw err;
       });
     });
@@ -25,19 +24,17 @@ export function init() {
     // Ensure the default preferences file exists.
     // TODO: if this file is corrupt we should return it to its default value.
     fs.readFile(ENV.ASSET_DEFAULT_PREFS, 'utf8', (err, data) => {
-      fs.outputFile(ENV.PREFS_DEFAULT_PATH, data, opts, (err) => {
+      fs.outputFile(ENV.PREFS_DEFAULT_PATH, data, opts, err => {
         if (err && err.code != 'EEXIST') throw err;
       });
     });
 
     // Ensure the user preferences file exists.
-    fs.outputFile(ENV.PREFS_USER_PATH, '{\n  \n}\n', opts, (err) => {
+    fs.outputFile(ENV.PREFS_USER_PATH, '{\n  \n}\n', opts, err => {
       if (err && err.code != 'EEXIST') throw err;
     });
 
-
     // ...
-
 
     // If there are any windows, tell them that config is ready.
     WindowManager.sendToAll('config-ready');

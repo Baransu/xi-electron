@@ -10,7 +10,7 @@ export function init() {
 // gets a unique id.
 let instanceId = 0;
 // NB: This is a synchronous event!
-ipcMain.on('request-instance-id', (e) => {
+ipcMain.on('request-instance-id', e => {
   e.returnValue = instanceId++;
 });
 

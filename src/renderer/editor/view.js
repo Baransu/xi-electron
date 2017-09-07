@@ -47,7 +47,7 @@ export default class View {
   destroy() {
     // TODO: isDirty methods from core ?
     this.workspace.sendToCore({
-      method: "close_view",
+      method: 'close_view',
       params: { view_id: this.id }
     });
     this.el.remove();
@@ -102,7 +102,7 @@ export default class View {
   }
 
   insert(chars) {
-    this.edit('insert', { chars })
+    this.edit('insert', { chars });
   }
 
   click(line, char, mod, count) {
@@ -129,7 +129,7 @@ export default class View {
    */
 
   registerKeyEvents() {
-    const onKeyEvent = (e) => {
+    const onKeyEvent = e => {
       if (this.hasFocus && execKey(this, e)) {
         e.preventDefault();
         // // Show crosshair when "alt" key is held down (rectangular selections).
@@ -166,18 +166,15 @@ export default class View {
     const modifier = e.shiftKey ? MODIFIER_SHIFT : MODIFIER_NONE;
     this.click(pos.line, pos.char, modifier, state.clicks);
 
-
-
     // TODO: dragging!
     // i.e., on('mousemove'), off(...), etc...
-
   }
 }
-
 
 // Checks if two points { left, top } are close to one another.
 function isClose(a, b) {
   if (a.pageX == -1 || b.pageX == -1) return false;
-  let dx = b.pageX - a.pageX, dy = b.pageY - a.pageY;
+  let dx = b.pageX - a.pageX,
+    dy = b.pageY - a.pageY;
   return dx * dx + dy * dy < 20 * 20;
 }

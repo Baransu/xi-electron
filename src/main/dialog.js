@@ -6,7 +6,7 @@ import { send } from './window';
  */
 export function openFile(win = null, opts = {}) {
   opts.properties = ['openFile'];
-  dialog.showOpenDialog(win, opts, (files) => {
+  dialog.showOpenDialog(win, opts, files => {
     if (files) {
       send(win, 'dialog-open-file', files);
     }
@@ -18,7 +18,7 @@ export function openFile(win = null, opts = {}) {
  */
 export function openFolder(win = null, opts = {}) {
   opts.properties = ['openDirectory'];
-  dialog.showOpenDialog(win, opts, (files) => {
+  dialog.showOpenDialog(win, opts, files => {
     if (files) {
       send(win, 'dialog-open-folder', files);
     }

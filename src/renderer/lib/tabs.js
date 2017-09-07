@@ -31,7 +31,9 @@ export default class Tabs extends EventEmitter {
 
     this.el = el('div', [this.contentEl, this.bottomBar], 'xi-tabs-container');
     this.el.setAttribute('data-xi-tabs-instance-id', this.id);
-    this.container = workspace.el.appendChild(el('div', [this.el, this.styleEl], 'xi-tabs'));
+    this.container = workspace.el.appendChild(
+      el('div', [this.el, this.styleEl], 'xi-tabs')
+    );
 
     const s = this.workspace.settings;
     this.overlapDistance = s.get('tabs.overlap-distance', 14);
@@ -47,7 +49,7 @@ export default class Tabs extends EventEmitter {
   }
 
   registerMouseEvents() {
-    on(window, 'resize', (e) => this.layoutTabs(), false);
+    on(window, 'resize', e => this.layoutTabs(), false);
 
     on(this.el, 'click', ({ target }) => {
       if (target.classList.contains('xi-new-tab')) {
@@ -62,14 +64,21 @@ export default class Tabs extends EventEmitter {
       }
     });
 
-    on(this.el, 'mousedown', ({ target }) => {
-      if (target.classList.contains('xi-new-tab')) return;
-      if (target.classList.contains('xi-tab') ||
+    on(
+      this.el,
+      'mousedown',
+      ({ target }) => {
+        if (target.classList.contains('xi-new-tab')) return;
+        if (
+          target.classList.contains('xi-tab') ||
           target.classList.contains('xi-tab-icon') ||
-          target.classList.contains('xi-tab-content')) {
-        this.selectTab(target);
-      }
-    }, false);
+          target.classList.contains('xi-tab-content')
+        ) {
+          this.selectTab(target);
+        }
+      },
+      false
+    );
   }
 
   /**
@@ -109,7 +118,8 @@ export default class Tabs extends EventEmitter {
       return this._cachedTabWidth;
     }
     const tabsContentWidth = this.contentEl.clientWidth - this.overlapDistance;
-    const width = (tabsContentWidth / this.tabs().length - 1) + this.overlapDistance;
+    const width =
+      tabsContentWidth / this.tabs().length - 1 + this.overlapDistance;
     return clamp(width, this.minWidth, this.maxWidth);
   }
 
@@ -130,16 +140,15 @@ export default class Tabs extends EventEmitter {
 
   layoutTabs() {
     const tabs = this.tabs(),
-          tabWidth = this.tabWidth(),
-          effectiveWidth = this.tabEffectiveWidth();
+      tabWidth = this.tabWidth(),
+      effectiveWidth = this.tabEffectiveWidth();
 
     this.cleanUpPreviouslyDraggedTabs();
     for (const tab of tabs) tab.style.width = `${tabWidth}px`;
 
     if (tabs.length == 1) {
       this.newTabButton.style.display = 'none';
-    }
-    else if (tabs.length > 1) {
+    } else if (tabs.length > 1) {
       this.newTabButton.style.display = 'block';
       this.newTabButton.style.width = '48px';
     }
@@ -148,7 +157,8 @@ export default class Tabs extends EventEmitter {
       let styleHTML = '';
       this.tabPositions().forEach((left, i) => {
         styleHTML += `
-          .xi-tabs-container[data-xi-tabs-instance-id='${this.id}'] .xi-tab:nth-child(${i+1})  {
+          .xi-tabs-container[data-xi-tabs-instance-id='${this
+            .id}'] .xi-tab:nth-child(${i + 1})  {
             transform: translate3d(${left}px, 0, 0);
           }
         `;
@@ -182,7 +192,7 @@ export default class Tabs extends EventEmitter {
     const effectiveWidth = this.tabEffectiveWidth();
     const tabPositions = this.tabPositions();
 
-    this.draggabillyInstances.forEach((inst) => inst.destroy());
+    this.draggabillyInstances.forEach(inst => inst.destroy());
 
     tabs.forEach((tab, originalIndex) => {
       if (tab == this.newTabButton) return;
@@ -232,7 +242,11 @@ export default class Tabs extends EventEmitter {
         const currentIndex = tabs.indexOf(tab);
 
         const currentPosX = originalPosX + moveVector.x;
-        const destinationIndex = clamp(Math.floor((currentPosX + (effectiveWidth / 2)) / effectiveWidth), 0, tabs.length - 2);
+        const destinationIndex = clamp(
+          Math.floor((currentPosX + effectiveWidth / 2) / effectiveWidth),
+          0,
+          tabs.length - 2
+        );
 
         if (currentIndex != destinationIndex) {
           this.animateTabMove(tab, currentIndex, destinationIndex);
@@ -272,9 +286,15 @@ export default class Tabs extends EventEmitter {
     if (!force && !this.signal('remove', null, tab.dataset)) return null;
 
     if (tab.classList.contains('xi-tab-selected')) {
-      if (tab.previousElementSibling && tab.previousElementSibling != this.newTabButton) {
+      if (
+        tab.previousElementSibling &&
+        tab.previousElementSibling != this.newTabButton
+      ) {
         this.selectTab(tab.previousElementSibling);
-      } else if (tab.nextElementSibling && tab.nextElementSibling != this.newTabButton) {
+      } else if (
+        tab.nextElementSibling &&
+        tab.nextElementSibling != this.newTabButton
+      ) {
         this.selectTab(tab.nextElementSibling);
       }
     }
@@ -303,7 +323,9 @@ export default class Tabs extends EventEmitter {
         tab.querySelector('.xi-tab-title').textContent = data.title;
       }
       if (key == 'icon') {
-        tab.querySelector('.xi-tab-icon').style.backgroundImage = `url('${data.icon}')`;
+        tab.querySelector(
+          '.xi-tab-icon'
+        ).style.backgroundImage = `url('${data.icon}')`;
       }
       tab.setAttribute(`data-${key}`, data[key]);
     }
@@ -350,6 +372,6 @@ export default class Tabs extends EventEmitter {
 
   remove(id) {
     const tab = this.el.querySelector(`.xi-tab[data-id='${id}']`);
-    if (tab) this.removeTab(tab /*, true */ );
+    if (tab) this.removeTab(tab /*, true */);
   }
 }

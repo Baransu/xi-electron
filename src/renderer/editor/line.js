@@ -8,16 +8,18 @@ export default class Line {
   constructor(lineView, data) {
     this.lineView = lineView;
     this.spans = el('span', null, 'xi-line-span');
-    this.el = lineView.lineContainer.appendChild(el('pre', [this.spans], 'xi-line'));
+    this.el = lineView.lineContainer.appendChild(
+      el('pre', [this.spans], 'xi-line')
+    );
     this.text = data.text;
     this.styles = data.styles || [];
     this.cursors = data.cursor || [];
-    this._cursors = []
+    this._cursors = [];
     this.render();
   }
 
   hasSelection() {
-    return this.styles.some((s) => s == 0);
+    return this.styles.some(s => s == 0);
   }
 
   hasCursor() {
@@ -36,7 +38,7 @@ export default class Line {
 
   render() {
     // Remove old cursors, and create new ones.
-    this._cursors.forEach((c) => c.el.remove());
+    this._cursors.forEach(c => c.el.remove());
     this._cursors.length = 0;
     this.cursors.forEach((ch, i) => {
       this._cursors[i] = new Cursor(this, ch);
@@ -61,8 +63,8 @@ export default class Line {
       let pos = 0;
       for (let i = 0; i < this.styles.length; i += 3) {
         const start = this.styles[i];
-        const end = start + this.styles[i+1];
-        const type = this.styles[i+2];
+        const end = start + this.styles[i + 1];
+        const type = this.styles[i + 2];
 
         let cls = '';
         if (type == STYLE_SEL) cls = 'xi-selection';
@@ -74,13 +76,17 @@ export default class Line {
         }
         // Add in styled region.
         if (start != end) {
-          this.spans.appendChild(el('span', this.text.substring(start, end), cls));
+          this.spans.appendChild(
+            el('span', this.text.substring(start, end), cls)
+          );
           pos = end;
         }
       }
       // Fill unstyled region at the end (if it exists).
       if (pos != this.text.length) {
-        this.spans.appendChild(el('span', this.text.substring(pos, this.text.length)));
+        this.spans.appendChild(
+          el('span', this.text.substring(pos, this.text.length))
+        );
       }
     }
   }

@@ -26,18 +26,18 @@ module.exports = function update(UPDATE_ENV, settings) {
    * Update the default preferences file.
    */
 
-   fs.readFile(ENV.ASSET_DEFAULT_PREFS, 'utf8', (err, data) => {
-     fs.outputFile(ENV.PREFS_DEFAULT_PATH, data, opts, (err) => {
-       if (err && err.code != 'EEXIST') throw err;
-     });
-   });
+  fs.readFile(ENV.ASSET_DEFAULT_PREFS, 'utf8', (err, data) => {
+    fs.outputFile(ENV.PREFS_DEFAULT_PATH, data, opts, err => {
+      if (err && err.code != 'EEXIST') throw err;
+    });
+  });
 
   /**
    * Update the default ui theme.
    */
 
-   // Default Dark Theme
-   const DEFAULT_THEME_UI = `
+  // Default Dark Theme
+  const DEFAULT_THEME_UI = `
    $background: #282828;
 
   // UI.
@@ -94,9 +94,9 @@ module.exports = function update(UPDATE_ENV, settings) {
   }
    `;
 
-   fs.outputFile(ENV.DEFAULT_THEME_UI, DEFAULT_THEME_UI, opts, (err) => {
-     if (err) throw err;
-   });
+  fs.outputFile(ENV.DEFAULT_THEME_UI, DEFAULT_THEME_UI, opts, err => {
+    if (err) throw err;
+  });
 
   // Default Dark Theme
   const DEFAULT_THEME_UI_DARK = `
@@ -157,7 +157,7 @@ module.exports = function update(UPDATE_ENV, settings) {
   }
   `;
 
-  fs.outputFile(ENV.DEFAULT_THEME_UI_DARK, DEFAULT_THEME_UI_DARK, opts, (err) => {
+  fs.outputFile(ENV.DEFAULT_THEME_UI_DARK, DEFAULT_THEME_UI_DARK, opts, err => {
     if (err) throw err;
   });
 
@@ -172,7 +172,7 @@ module.exports = function update(UPDATE_ENV, settings) {
   }
   `;
 
-  fs.outputFile(ENV.DEFAULT_THEME_SYNTAX, DEFAULT_THEME_SYNTAX, opts, (err) => {
+  fs.outputFile(ENV.DEFAULT_THEME_SYNTAX, DEFAULT_THEME_SYNTAX, opts, err => {
     if (err) throw err;
   });
 
@@ -183,10 +183,14 @@ module.exports = function update(UPDATE_ENV, settings) {
   }
   `;
 
-  fs.outputFile(ENV.DEFAULT_THEME_SYNTAX_DARK, DEFAULT_THEME_SYNTAX_DARK, opts, (err) => {
-    if (err) throw err;
-  });
-
+  fs.outputFile(
+    ENV.DEFAULT_THEME_SYNTAX_DARK,
+    DEFAULT_THEME_SYNTAX_DARK,
+    opts,
+    err => {
+      if (err) throw err;
+    }
+  );
 
   // Set settings to reflect update status.
   if (UPDATE_ENV == ENV.UPDATE_FIRST) {
@@ -197,4 +201,4 @@ module.exports = function update(UPDATE_ENV, settings) {
   settings.set('UPDATE_VERSION', app.getVersion());
 
   settings.save();
-}
+};

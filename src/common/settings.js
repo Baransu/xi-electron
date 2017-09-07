@@ -3,7 +3,11 @@ import assert from 'assert';
 import strip from 'strip-json-comments';
 import fs from 'fs-extra';
 
-import { MAIN_CONFIG_PATH, PREFS_DEFAULT_PATH, PREFS_USER_PATH } from './environment';
+import {
+  MAIN_CONFIG_PATH,
+  PREFS_DEFAULT_PATH,
+  PREFS_USER_PATH
+} from './environment';
 import EventEmitter from './events';
 import { requestLock } from './lock';
 import { encrypt, decrypt } from './encryption';
@@ -50,7 +54,7 @@ class Settings extends EventEmitter {
     requestLock((err, release) => {
       if (err) throw err;
       // Read each preferences file.
-      this._store = Object.assign({}, ...this._paths.map((p) => this._read(p)));
+      this._store = Object.assign({}, ...this._paths.map(p => this._read(p)));
       // Release the lock on our file.
       release();
       // Emit event asynchronously.
@@ -81,14 +85,15 @@ class Settings extends EventEmitter {
     }
   }
 
-  _write(filepath) {
-
-  }
+  _write(filepath) {}
 
   _watchFile(filepath) {
     if (!this._watchers[filepath]) {
       try {
-        this._watchers[filepath] = fs.watch(filepath, this._onFileChange.bind(this, filepath));
+        this._watchers[filepath] = fs.watch(
+          filepath,
+          this._onFileChange.bind(this, filepath)
+        );
       } catch (err) {
         // File may not exist yet or the user may not have permission to
         // access the file or directory. Fail gracefully.
@@ -111,16 +116,18 @@ class Settings extends EventEmitter {
     // Reload settings and emit change event.
     if (eventType == 'change') {
       this._load('change');
-    }
-
-    else if (eventType == 'rename') {
+    } else if (eventType == 'rename') {
       this._unwatchFile(filepath, true);
     }
   }
 
   // Get a key from settings using dot-notation.
   get(keyPath, defaultValue) {
-    assert.strictEqual(typeof keyPath, 'string', 'First parameter must be a string. Did you mean to use `all()` instead?');
+    assert.strictEqual(
+      typeof keyPath,
+      'string',
+      'First parameter must be a string. Did you mean to use `all()` instead?'
+    );
 
     const exists = hasKeyPath(this._store, keyPath);
     const value = getValueAtKeyPath(this._store, keyPath);
@@ -133,7 +140,11 @@ class Settings extends EventEmitter {
   }
 
   set(keyPath, value) {
-    assert.strictEqual(typeof keyPath, 'string', 'First parameter must be a string.');
+    assert.strictEqual(
+      typeof keyPath,
+      'string',
+      'First parameter must be a string.'
+    );
 
     setValueAtKeyPath(this._store, keyPath, value);
   }
@@ -162,7 +173,6 @@ class Settings extends EventEmitter {
   // TODO: implement save to disk (save this._store)
 }
 
-
 // Show an error alert.
 function alertError(title, content) {
   if (electron.ipcRenderer) {
@@ -172,14 +182,12 @@ function alertError(title, content) {
   }
 }
 
-
 /**
  * Dot-notation helpers.
  */
 
 // Checks if the given object contains the given key path.
 function hasKeyPath(obj, keyPath) {
-
   const keys = keyPath.split(/\./);
 
   for (let i = 0, len = keys.length; i < len; i++) {

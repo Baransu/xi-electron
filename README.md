@@ -1,5 +1,5 @@
 # Xi Electron
-_A front-end for the xi-editor built with modern web technologies._
+> A front-end for the xi-editor built with modern web technologies._
 
 ## Demo
 
@@ -16,8 +16,8 @@ To get started, simply run:
 ```bash
 > git clone https://gitlab.com/callodacity/xi-electron
 > cd xi-electron
-> npm install   # or `yarn`
-> npm run make  # or `yarn make`
+> yarn && yarn install:core
+> yarn make
 ```
 
 The built app will be output to `xi-electron/out/`.

@@ -18,8 +18,8 @@ settings.on('ready', () => {
 // Emitted when parsing boot args to a workspace.
 // TODO: put this info in settings so it's available earlier?
 ipcRenderer.once('args', (e, filepaths) => {
-  filepaths.forEach((filepath) => {
-    workspace.newView({ 'file_path': filepath });
+  filepaths.forEach(filepath => {
+    workspace.newView({ file_path: filepath });
   });
 });
 

@@ -1,7 +1,7 @@
 import glob from 'glob';
 import { app } from 'electron';
 
-import { loadSettings }  from './common/settings';
+import { loadSettings } from './common/settings';
 import { releaseLock } from './common/lock';
 import * as ENV from './common/environment';
 import WindowManager from './main/window';
@@ -17,7 +17,7 @@ process.once('SIGINT', () => process.exit(ENV.EXIT_EXTERNAL));
 process.once('SIGTERM', () => process.exit(ENV.EXIT_EXTERNAL));
 
 // Clean up our resources on uncaught exceptions.
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   releaseLock();
 
   console.error('Uncaught error!');
@@ -37,7 +37,7 @@ let isReady = false;
 function ready() {
   return new Promise((resolve, reject) => {
     // Load main process modules.
-    glob.sync(ENV.PRELOAD_SCRIPTS).forEach((script) => {
+    glob.sync(ENV.PRELOAD_SCRIPTS).forEach(script => {
       require(script).init();
     });
     // Wait until our settings are ready.
@@ -55,7 +55,7 @@ app.on('ready', async () => {
   // Check if we need to run the update script or not.
   if (settings.get('UPDATE_FIRST') == false) {
     require(ENV.UPDATE_SCRIPT)(ENV.UPDATE_FIRST, settings);
-  } else if (ENV.PROD && (settings.get('UPDATE_VERSION') != ENV.VERSION)) {
+  } else if (ENV.PROD && settings.get('UPDATE_VERSION') != ENV.VERSION) {
     require(ENV.UPDATE_SCRIPT)(ENV.UPDATE_VERSION, settings);
   } else if (settings.get('UPDATE_FORCE')) {
     require(ENV.UPDATE_SCRIPT)(ENV.UPDATE_FORCE, settings);

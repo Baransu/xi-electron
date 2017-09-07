@@ -12,7 +12,7 @@
             }
           ],
           "babili",
-          "react"
+          "react-app"
         ],
         "plugins": [
           "transform-async-to-generator"
@@ -32,7 +32,7 @@
             }
           ],
           "babili",
-          "react"
+          "react-app"
         ],
         "plugins": [
           "transform-async-to-generator"
