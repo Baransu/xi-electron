@@ -10,7 +10,7 @@ export const PROD = process.env.NODE_ENV === 'production';
 
 // Paths.
 export const ROOT = path.resolve(__dirname, '..');
-export const XI_PLUGIN_DIR = path.join(ROOT, 'xi-plugins/');
+export const XI_PLUGIN_DIR = path.join(ROOT, 'xi-plugins');
 export const CORE_PATH = path.join(ROOT, 'xi-core', 'xi-core');
 export const ASSETS = path.join(ROOT, 'assets');
 export const UPDATE_SCRIPT = path.join(ROOT, 'main', 'update.js');

@@ -33,7 +33,7 @@ mkdir ./src/xi-plugins
 cp ./.xi-core/python/bracket_example.py ./src/xi-plugins/
 cp ./.xi-core/python/shouty.py ./src/xi-plugins/
 cp ./.xi-core/python/spellcheck.py ./src/xi-plugins/
-cp -R ./.xi-core/rust/syntect-plugin/target/debug ./src/xi-plugins/xi-syntect-plugin
+cp ./.xi-core/rust/syntect-plugin/target/debug/xi-syntect-plugin ./src/xi-plugins/xi-syntect-plugin
 
 echo "Build complete!"
 echo "The xi-editor core was built and placed in src/xi-core"
